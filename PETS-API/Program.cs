@@ -1,14 +1,12 @@
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PETS_API.Application.Mapper;
 using PETS_API.Application.Swagger;
 using PETS_API.Domain.Models.PetAggregate;
 using PETS_API.Infra.Repository;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +25,12 @@ builder.Services.AddApiVersioning(o =>
 {
     o.AssumeDefaultVersionWhenUnspecified = true;
     o.DefaultApiVersion = new ApiVersion(1, 0);
-}).AddMvc();
+}).AddMvc().AddApiExplorer(setup =>
+{
+    setup.GroupNameFormat = "'v'VVV";
+    setup.SubstituteApiVersionInUrl = true;
+});
+
 builder.Services.ConfigureOptions<ConfigureSwaggerGenOptions>();
 
 builder.Services.AddSwaggerGen(c =>
@@ -64,10 +67,10 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddTransient<IPetRepository, PetRepository>();
-builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerGenOptions>();
 
 
-builder.Services.AddCors(options => {
+builder.Services.AddCors(options =>
+{
     options.AddPolicy(name: "MyPolicy",
         policy =>
         {
@@ -107,10 +110,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        foreach(var description in versionDescriptionProvider.ApiVersionDescriptions)
+        foreach (var description in versionDescriptionProvider.ApiVersionDescriptions)
         {
             options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
-                $"Web Api - {description.GroupName.ToUpper()}");
+                $"Web APi - {description.GroupName.ToUpper()}");
         }
     });
 }
