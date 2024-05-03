@@ -11,8 +11,8 @@ using PETS_API.Infra;
 namespace PETS_API.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20240502222838_Add_Pets_Table")]
-    partial class Add_Pets_Table
+    [Migration("20240503150044_AddOwnerTable")]
+    partial class AddOwnerTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,24 @@ namespace PETS_API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("PETS_API.Data.Pet", b =>
+            modelBuilder.Entity("PETS_API.Domain.Models.OwnerAggregate.Owner", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Owners");
+                });
+
+            modelBuilder.Entity("PETS_API.Domain.Models.PetAggregate.Pet", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()

@@ -5,7 +5,7 @@
 namespace PETS_API.Migrations
 {
     /// <inheritdoc />
-    public partial class Add_Pets_Table : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
